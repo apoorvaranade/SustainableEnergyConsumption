@@ -11,9 +11,12 @@ import com.me.sustainable.living.service.DelegatorService;
 @RestController
 public class Controller {
 	DelegatorService delegatorService;
+	
 	@RequestMapping("/getUser")
-    public User getUser(@RequestParam("userId") int userId) {
-        return (User) delegatorService.getEntity(EntityType.USER).getEntity(userId);
+    public User getUser(@RequestParam(value="userId") int userId) {
+       // return (User) delegatorService.getEntity(EntityType.USER).getEntity(userId);
+		System.out.println("Did it reach here???");
+		return new User(1,"Sunil");
     }
 	
 }

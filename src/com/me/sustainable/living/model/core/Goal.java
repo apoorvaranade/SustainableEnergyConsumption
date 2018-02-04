@@ -2,17 +2,34 @@ package com.me.sustainable.living.model.core;
 
 import java.io.Serializable;
 
+import com.me.sustainable.living.model.resource.EnergyConsumptionType;
+
 public class Goal implements Serializable {
-	int goalId;
+	
+	private static final long serialVersionUID = 1L;
 
-	private Double cutDownUsageBy;
+	private int goalId;
 
-	public Double getCutDownUsageBy() {
-		return cutDownUsageBy;
+	private Double consumptionLimit;
+	
+	private EnergyConsumptionType resourceType;
+	
+	public Goal() {
+		
+	}
+	public Goal(int goalId, Double consumptionLimit, EnergyConsumptionType resourceType) {
+		super();
+		this.goalId = goalId;
+		this.consumptionLimit = consumptionLimit;
+		this.resourceType = resourceType;
 	}
 
-	public void setCutDownUsageBy(Double cutDownUsageBy) {
-		this.cutDownUsageBy = cutDownUsageBy;
+	public int getGoalId() {
+		return goalId;
+	}
+
+	public void setGoalId(int goalId) {
+		this.goalId = goalId;
 	}
 
 	public Goal(int goalId) {
@@ -40,5 +57,21 @@ public class Goal implements Serializable {
 		if (goalId != other.goalId)
 			return false;
 		return true;
+	}
+
+	public Double getConsumptionLimit() {
+		return consumptionLimit;
+	}
+
+	public void setConsumptionLimit(Double consumptionLimit) {
+		this.consumptionLimit = consumptionLimit;
+	}
+
+	public EnergyConsumptionType getResourceType() {
+		return resourceType;
+	}
+
+	public void setResourceType(EnergyConsumptionType resourceType) {
+		this.resourceType = resourceType;
 	}
 }

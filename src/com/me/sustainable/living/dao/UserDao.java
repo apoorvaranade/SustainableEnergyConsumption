@@ -23,7 +23,9 @@ import com.me.sustainable.living.model.core.Goal;
 import com.me.sustainable.living.model.core.Home;
 import com.me.sustainable.living.model.core.User;
 import com.me.sustainable.living.model.resource.AbstractEnergySource;
-import com.me.sustainable.living.model.resource.IEnergySource;
+import com.me.sustainable.living.model.resource.EnergyConsumptionType;
+import com.me.sustainable.living.model.resource.EnergySourceGas;
+import com.me.sustainable.living.model.resource.EnergySourcePower;
 
 @Service
 @Component
@@ -31,16 +33,16 @@ public class UserDao {
 
 	@Autowired
 	private DataSource dataSource;
-	@Autowired  
+	@Autowired
 	private JdbcTemplate jdbcTemplate;
-	@Autowired  
+	@Autowired
 	private NamedParameterJdbcTemplate npJdbcTemplate;
 
 	public User getUser(int userId) {
 		String sql = SQLHolder.GET_USER;
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("userId", userId);
-		User user = npJdbcTemplate.query(sql, paramMap,new ResultSetExtractor<User>() {
+		User user = npJdbcTemplate.query(sql, paramMap, new ResultSetExtractor<User>() {
 
 			@Override
 			public User extractData(ResultSet rs) throws SQLException, DataAccessException {
@@ -48,31 +50,72 @@ public class UserDao {
 
 				while (rs.next()) {
 					user = new User(rs.getInt("USER_ID"), rs.getString("USER_NAME"));
-					}
+				}
 				return user;
 			}
 		});
-		
+
 		return user;
 	}
-	
-	
+
 	public void saveUserHomeResources(User user) {
-		
+
 		String sql = SQLHolder.SAVE_RESOURCES;
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		int idCount = 8;
-		for(AbstractEnergySource energySource : user.getHome().getResources()) {
-			paramMap.put("resourceId", idCount);
-			paramMap.put("homeId", 1);
+		int idCount = 18;
+		for (AbstractEnergySource energySource : user.getHome().getResources()) {
+			// paramMap.put("resourceId", idCount);
+			paramMap.put("homeId", user.getHome().getHomeId());
 			paramMap.put("resourceType", energySource.getType().toString());
-			paramMap.put("amountUsed", 10);
+			paramMap.put("amountUsed", energySource.getConsumptionAmount());
 			paramMap.put("asOfDate", new Date());
 			int row = npJdbcTemplate.update(sql, paramMap);
 			idCount++;
 		}
-		 	 	 	 	
+
 	}
+
+	public List<AbstractEnergySource> getConsumptionByHomeId(int homeId) {
+
+		String sql = SQLHolder.GET_HOME_CONSUMPTION;
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("homeID", homeId);
+		List<AbstractEnergySource> resourcesList = npJdbcTemplate.query(sql, paramMap,
+				new ResultSetExtractor<List<AbstractEnergySource>>() {
+
+					@Override
+					public List<AbstractEnergySource> extractData(ResultSet rs)
+							throws SQLException, DataAccessException {
+
+						List<AbstractEnergySource> resourcesList = new ArrayList<AbstractEnergySource>();
+
+						EnergySourceGas energySourceGas = new EnergySourceGas();
+						energySourceGas.setAsOfDate(new Date());
+						EnergySourcePower energySourcePower = new EnergySourcePower();
+						energySourcePower.setAsOfDate(new Date());
+
+						while (rs.next()) {
+
+							if (EnergyConsumptionType.GAS.toString().equalsIgnoreCase(rs.getString("RESOURCE_TYPE"))) {
+								energySourceGas.setConsumptionAmount(
+										energySourceGas.getConsumptionAmount() + rs.getInt("AMT_USED"));
+							} else if (EnergyConsumptionType.POWER.toString()
+									.equalsIgnoreCase(rs.getString("RESOURCE_TYPE"))) {
+								energySourcePower.setConsumptionAmount(
+										energySourcePower.getConsumptionAmount() + rs.getInt("AMT_USED"));
+							}
+						}
+
+						resourcesList.add(energySourceGas);
+						resourcesList.add(energySourcePower);
+
+						return resourcesList;
+					}
+				});
+
+		return resourcesList;
+	}
+
 	public User getUserDetails(int userId) {
 
 		String sql = SQLHolder.GET_USER_DETAIL;
@@ -127,5 +170,4 @@ public class UserDao {
 	public void setNpJdbcTemplate(NamedParameterJdbcTemplate npJdbcTemplate) {
 		this.npJdbcTemplate = npJdbcTemplate;
 	}
-	
 }

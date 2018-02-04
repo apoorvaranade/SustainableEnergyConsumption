@@ -5,15 +5,18 @@ import java.util.List;
 import com.me.sustainable.living.model.core.Goal;
 import com.me.sustainable.living.model.core.User;
 import com.me.sustainable.living.model.resource.AbstractEnergySource;
+import com.me.sustainable.living.model.resource.EnergyConsumptionType;
 
 public interface UserService extends IService<User>{
 
-	List<Goal> getGoalsForUser(String userId);
+	User saveConsumption(List<AbstractEnergySource> sourecList,int homeId);
+
+	List<AbstractEnergySource> getConsumptionByHomeId(int homeId);
 	
-	User setGoalsForUser(List<Goal> goals , int userId);
+	List<Goal> setGoalsForHome(List<Goal> goals , int homeId);
 	
-    List<AbstractEnergySource> getConsumption(int homeId);
-    
-	User setHomeResources(List<AbstractEnergySource> sourecList,int id);
+	List<Goal> getGoalsForHome(int homeId);
+	
+	void updateGoalsForHome(int goalId, EnergyConsumptionType energyConsumptionType, int consumptionLimit);
 
 }

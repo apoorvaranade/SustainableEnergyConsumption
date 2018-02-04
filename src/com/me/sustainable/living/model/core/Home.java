@@ -7,24 +7,25 @@ import com.me.sustainable.living.model.resource.AbstractEnergySource;
 
 public class Home implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
-	// List<EnergyType> resource = new LinkedList<EnergyType>();
 	private int homeId;
-
 	private String name;
 	private Double sustainabilityScore;
 	private List<AbstractEnergySource> resources;
+	private List<Goal> goals;
 
-	public Home(String name, List<AbstractEnergySource> resources) {
+	public Home(String name, List<AbstractEnergySource> resources , int homeId) {
 		this.name = name;
 		this.resources = resources;
+		this.homeId = homeId;
 	}
 
 	public Home() {
+	}
+	
+	public int getHomeId() {
+		return homeId;
 	}
 
 	public Double getSustainabilityScore() {
@@ -79,6 +80,14 @@ public class Home implements Serializable {
 		if (homeId != other.homeId)
 			return false;
 		return true;
+	}
+
+	public List<Goal> getGoals() {
+		return goals;
+	}
+
+	public void setGoals(List<Goal> goals) {
+		this.goals = goals;
 	}
 
 }

@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.me.sustainable.living.model.core.EntityType;
+import com.me.sustainable.living.model.core.Goal;
 import com.me.sustainable.living.model.core.User;
 import com.me.sustainable.living.model.resource.AbstractEnergySource;
+import com.me.sustainable.living.model.resource.EnergyConsumptionType;
 import com.me.sustainable.living.service.DelegatorService;
 import com.me.sustainable.living.service.IService;
 import com.me.sustainable.living.service.UserService;
@@ -44,19 +46,36 @@ public class Controller {
 		
     }
 	
-	@RequestMapping(value = "/saveHomeResources", method = RequestMethod.POST ,consumes="application/json")
-    public ResponseEntity<List<AbstractEnergySource>>  saveHomeResources(@RequestBody List<AbstractEnergySource> energyResourceList ) {
+	@RequestMapping(value = "/saveConsumption", method = RequestMethod.POST ,consumes="application/json")
+    public ResponseEntity<List<AbstractEnergySource>>  saveHomeResources(@RequestBody List<AbstractEnergySource> energyResourceList , @RequestParam(value="homeId") int homeId) {
 		
-		((UserService) delegatorService.getService(EntityType.USER)).setHomeResources(energyResourceList, 1);
+		((UserService) delegatorService.getService(EntityType.USER)).saveConsumption(energyResourceList, homeId);
 		
 		return new ResponseEntity<List<AbstractEnergySource>>(energyResourceList, HttpStatus.OK);
 		
     }
 	
 	@RequestMapping(value = "/getConsumption", method = RequestMethod.GET ,produces="application/json")
-    public List<AbstractEnergySource> getConsumption(@RequestParam(value="userId") int userId) {
-		return ((UserService) delegatorService.getService(EntityType.USER)).getConsumption( userId); 
-		
+    public List<AbstractEnergySource> getConsumption(@RequestParam(value="homeId") int homeId) {
+		return ((UserService) delegatorService.getService(EntityType.USER)).getConsumptionByHomeId( homeId); 
+    }
+	
+	@RequestMapping(value = "/saveGoals", method = RequestMethod.POST ,produces="application/json")
+    public ResponseEntity<List<Goal>> saveGoals(@RequestBody List<Goal> goalsList , @RequestParam(value="homeId") int homeId) {
+		((UserService) delegatorService.getService(EntityType.USER)).setGoalsForHome( goalsList , homeId);
+		return new ResponseEntity<List<Goal>>(goalsList, HttpStatus.OK);  
+    }
+	
+	@RequestMapping(value = "/getGoals", method = RequestMethod.GET ,produces="application/json")
+    public ResponseEntity<List<Goal>> getGoals(@RequestParam(value="homeId") int homeId) {
+		List<Goal> goalsList = ((UserService) delegatorService.getService(EntityType.USER)).getGoalsForHome(homeId);
+		return new ResponseEntity<List<Goal>>(goalsList, HttpStatus.OK);  
+    }
+	
+	@RequestMapping(value = "/updateGoal", method = RequestMethod.GET ,produces="application/json")
+    public ResponseEntity<String> updateGoal(@RequestParam(value="goalId") int goalId , @RequestParam(value="resourceType") String resourceType  , @RequestParam(value="consumptionLimit") int consumptionLimit) {
+		((UserService) delegatorService.getService(EntityType.USER)).updateGoalsForHome(goalId , EnergyConsumptionType.valueOf(resourceType) , consumptionLimit);
+		return new ResponseEntity<String>(HttpStatus.OK);  
     }
 	
 	

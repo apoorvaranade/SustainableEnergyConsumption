@@ -1,6 +1,12 @@
 package com.me.sustainable.living.service;
 
+import java.util.List;
+
+import com.me.sustainable.living.model.core.User;
+import com.me.sustainable.living.model.resource.AbstractEnergySource;
+
 public interface IService<T> {
 
-	public T getEntity(int id);
+	public User getEntity(int id);
+	
 }

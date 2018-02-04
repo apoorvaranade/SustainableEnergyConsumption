@@ -5,11 +5,21 @@ import java.io.Serializable;
 public class Goal implements Serializable {
 	int goalId;
 
+	private Double cutDownUsageBy;
+
+	public Double getCutDownUsageBy() {
+		return cutDownUsageBy;
+	}
+
+	public void setCutDownUsageBy(Double cutDownUsageBy) {
+		this.cutDownUsageBy = cutDownUsageBy;
+	}
+
 	public Goal(int goalId) {
 		super();
 		this.goalId = goalId;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

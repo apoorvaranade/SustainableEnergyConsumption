@@ -10,6 +10,8 @@ public class User implements Serializable {
 	private static final long serialVersionUID = 5745820694966852830L;
 	private int userId;
 	private String userName;
+	
+	private Home home;
 
 	public User(int userId, String userName) {
 		super();
@@ -37,6 +39,14 @@ public class User implements Serializable {
 
 	public Map<Home, List<Goal>> getHomeGoalMap() {
 		return homeGoalMap;
+	}
+
+	public Home getHome() {
+		return home;
+	}
+
+	public void setHome(Home home) {
+		this.home = home;
 	}
 
 }

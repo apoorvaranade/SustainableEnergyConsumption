@@ -1,16 +1,26 @@
 package com.me.sustainable.living.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.me.sustainable.living.model.core.EntityType;
 
-public class DelegatorService {
+@Service
+@Transactional
+public class DelegatorService<T> {
 	//IService service;
 	
-	public IService getEntity(EntityType type)
+	@Autowired
+	private UserServiceImpl userServiceImpl;
+	
+	public <T extends IService<?>> Object getService(EntityType type)
 	{
 		switch(type)
-		{
-			case USER: return new UserServiceImpl();
+		{  case USER: return  userServiceImpl;
+		
+		   default: return  userServiceImpl;
+			
 		}
-		return null;
 	}
 }

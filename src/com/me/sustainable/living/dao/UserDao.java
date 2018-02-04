@@ -3,6 +3,7 @@ package com.me.sustainable.living.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,28 +15,64 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.me.sustainable.living.dao.sql.SQLHolder;
 import com.me.sustainable.living.model.core.Goal;
 import com.me.sustainable.living.model.core.Home;
 import com.me.sustainable.living.model.core.User;
+import com.me.sustainable.living.model.resource.AbstractEnergySource;
+import com.me.sustainable.living.model.resource.IEnergySource;
 
+@Service
+@Component
 public class UserDao {
 
 	@Autowired
 	private DataSource dataSource;
+	@Autowired  
 	private JdbcTemplate jdbcTemplate;
+	@Autowired  
 	private NamedParameterJdbcTemplate npJdbcTemplate;
 
 	public User getUser(int userId) {
 		String sql = SQLHolder.GET_USER;
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("userId", userId);
-		User user = npJdbcTemplate.queryForObject(sql, paramMap, User.class);
+		User user = npJdbcTemplate.query(sql, paramMap,new ResultSetExtractor<User>() {
 
+			@Override
+			public User extractData(ResultSet rs) throws SQLException, DataAccessException {
+				User user = null;
+
+				while (rs.next()) {
+					user = new User(rs.getInt("USER_ID"), rs.getString("USER_NAME"));
+					}
+				return user;
+			}
+		});
+		
 		return user;
 	}
-
+	
+	
+	public void saveUserHomeResources(User user) {
+		
+		String sql = SQLHolder.SAVE_RESOURCES;
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		int idCount = 8;
+		for(AbstractEnergySource energySource : user.getHome().getResources()) {
+			paramMap.put("resourceId", idCount);
+			paramMap.put("homeId", 1);
+			paramMap.put("resourceType", energySource.getType().toString());
+			paramMap.put("amountUsed", 10);
+			paramMap.put("asOfDate", new Date());
+			int row = npJdbcTemplate.update(sql, paramMap);
+			idCount++;
+		}
+		 	 	 	 	
+	}
 	public User getUserDetails(int userId) {
 
 		String sql = SQLHolder.GET_USER_DETAIL;
@@ -90,4 +127,5 @@ public class UserDao {
 	public void setNpJdbcTemplate(NamedParameterJdbcTemplate npJdbcTemplate) {
 		this.npJdbcTemplate = npJdbcTemplate;
 	}
+	
 }

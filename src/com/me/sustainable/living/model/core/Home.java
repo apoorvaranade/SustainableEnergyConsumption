@@ -1,11 +1,55 @@
 package com.me.sustainable.living.model.core;
 
 import java.io.Serializable;
+import java.util.List;
+
+import com.me.sustainable.living.model.resource.AbstractEnergySource;
 
 public class Home implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	// List<EnergyType> resource = new LinkedList<EnergyType>();
 	private int homeId;
+
+	private String name;
+	private Double sustainabilityScore;
+	private List<AbstractEnergySource> resources;
+
+	public Home(String name, List<AbstractEnergySource> resources) {
+		this.name = name;
+		this.resources = resources;
+	}
+
+	public Home() {
+	}
+
+	public Double getSustainabilityScore() {
+		return sustainabilityScore;
+	}
+
+	public void setSustainabilityScore(Double sustainabilityScore) {
+		this.sustainabilityScore = sustainabilityScore;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public List<AbstractEnergySource> getResources() {
+		return resources;
+	}
+
+	public void setResources(List<AbstractEnergySource> resources) {
+		this.resources = resources;
+	}
 
 	public Home(int homeId) {
 		this.homeId = homeId;

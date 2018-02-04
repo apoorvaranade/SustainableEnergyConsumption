@@ -2,17 +2,18 @@ package com.me.sustainable.living.model.resource;
 
 import java.util.Date;
 
-public class EnergySourceGas extends AbstractEnergySource{
 
-	public EnergySourceGas(int consumptionAmount , Date asOfDate){
+public class EnergySourcePower extends AbstractEnergySource{
+
+	public EnergySourcePower(int consumptionAmount , Date asOfDate){
 		this.consumptionAmount = consumptionAmount;
-		this.type = EnergyConsumptionType.GAS;
+		this.type = EnergyConsumptionType.POWER;
 		this.asOfDate = asOfDate;
 	}
-	
+
 	@Override
 	public EnergyConsumptionUnit getUnit() {
-		return EnergyConsumptionUnit.KILOGRAMS;
+		return EnergyConsumptionUnit.WATTS;
 	}
 	
 	@Override

@@ -10,6 +10,8 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -37,6 +39,8 @@ public class UserDao {
 	private JdbcTemplate jdbcTemplate;
 	@Autowired
 	private NamedParameterJdbcTemplate npJdbcTemplate;
+	
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	public User getUser(int userId) {
 		String sql = SQLHolder.GET_USER;
@@ -112,7 +116,7 @@ public class UserDao {
 						return resourcesList;
 					}
 				});
-
+		logger.info("User Consumption Details for Home ID : " + homeId );
 		return resourcesList;
 	}
 
